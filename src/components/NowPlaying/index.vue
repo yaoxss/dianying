@@ -1,20 +1,23 @@
 <template>
-    <div class="movie_body">
-        <ul>
-            <li v-for="item in movieList" :key="item.id">
-<!--                setWH过滤方法在 main.js里面-->
-                <div class="pic_show"><img :src="item.img | setWH('128.180')"></div>
-                <div class="info_list">
-                    <h2>{{ item.nm }} <img  v-if="item.version" src="@/assets/maxs.png" alt=""></h2>
-                    <p>观众评 <span class="grade">{{ item.sc }}</span></p>
-                    <p>主演: {{ item.star }}</p>
-                    <p>{{ item.showInfo }}</p>
-                </div>
-                <div class="btn_mall">
-                    购票
-                </div>
-            </li>
-        </ul>
+    <div class="movie_body" ref="movie_body">
+        <Scroller :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
+            <ul>
+                <li v-for="item in movieList" :key="item.id">
+                    <!--                setWH过滤方法在 main.js里面-->
+                    <div class="pic_show"><img :src="item.img | setWH('128.180')"></div>
+                    <div class="info_list">
+                        <h2>{{ item.nm }} <img  v-if="item.version" src="@/assets/maxs.png" alt=""></h2>
+                        <p>观众评 <span class="grade">{{ item.sc }}</span></p>
+                        <p>主演: {{ item.star }}</p>
+                        <p>{{ item.showInfo }}</p>
+                    </div>
+                    <div class="btn_mall">
+                        购票
+                    </div>
+                </li>
+                <li class="pullDown"><div>{{ pullDownMsg }}</div></li>
+            </ul>
+        </Scroller>
     </div>
 </template>
 
@@ -24,7 +27,8 @@
         name: "nowPlaying",
         data(){
             return {
-                movieList: []
+                movieList: [],
+                pullDownMsg: '往上拉获取更多内容.....'
             }
         },
         mounted() {
@@ -35,6 +39,36 @@
                 }
                 console.log(this.movieList);
             });
+        },
+        methods : {
+            handleToDetail(movieId) {
+                console.log(movieId);
+                this.$router.push('/movie/detail/1/' + movieId);
+            },
+            handleToScroll(pos) {
+                // pos坐标
+                let movieBodyHeight = 0 - this.$refs.movie_body.offsetHeight;
+                if (pos.y > movieBodyHeight - 60) {
+                    this.pullDownMsg = '往上拉获取更多内容.....';
+                }
+            },
+            handleToTouchEnd(pos) {
+                let movieBodyHeight = 0 - this.$refs.movie_body.offsetHeight;
+                if (pos.y > movieBodyHeight - 60) {
+                    // this.axios.get('/api/movieOnInfoList?cityId=11').then((res) => {
+                    //     var msg = res.data.msg;
+                    //     if (msg === 'ok') {
+                    //         this.pullDownMsg = '更新成功';
+                    //         setTimeout(() => {
+                    //             this.movieList = res.data.data.movieList;
+                    //             this.pullDownMsg = '';
+                    //         }, 1000);
+                    //
+                    //     }
+                    // });
+                    this.pullDownMsg = "已经没有更多数据了...."
+                }
+            }
         }
     }
 </script>
@@ -52,4 +86,5 @@
     .movie_body .info_list img{ width:50px; position: absolute; right:10px; top: 5px;}
     .movie_body .btn_mall , .movie_body .btn_pre{ width:47px; height:27px; line-height: 28px; text-align: center; background-color: #f03d37; color: #fff; border-radius: 4px; font-size: 12px; cursor: pointer;}
     .movie_body .btn_pre{ background-color: #3c9fe6;}
+    .pullDown div{ width:100%;text-align: center;color:#999999}
 </style>
