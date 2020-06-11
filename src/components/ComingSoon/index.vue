@@ -1,5 +1,6 @@
 <template>
-    <div class="movie_body">
+    <Loading v-if="loading"></Loading>
+    <div v-else class="movie_body">
         <Scroller>
             <ul>
                 <li v-for="item in comingList" :key="item.id">
@@ -25,7 +26,8 @@
         name: "comingSoon",
         data(){
             return {
-                comingList: []
+                comingList: [],
+                loading: true
             }
         },
         mounted() {
@@ -33,8 +35,8 @@
                 let msg = res.data.msg;
                 if( msg === 'ok'){
                     this.comingList = res.data.data.comingList;
+                    this.loading = false;
                 }
-                console.log(this.comingList);
             });
         }
     }

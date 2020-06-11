@@ -1,5 +1,6 @@
 <template>
-    <div class="city_body">
+    <Loading v-if="loading"></Loading>
+    <div v-else class="city_body">
         <div class="city_list">
             <Scroller ref="city_List">
                 <div>
@@ -35,7 +36,8 @@
         data(){
           return {
               cityList: [],
-              hotList: []
+              hotList: [],
+              loading: true
           }
         },
         mounted() {
@@ -47,6 +49,7 @@
                     let {cityList,hotList} = this.formatCityList(cities);
                     this.cityList = cityList;
                     this.hotList = hotList;
+                    this.loading = false;
                     // console.log(cityList);
                 }
             });

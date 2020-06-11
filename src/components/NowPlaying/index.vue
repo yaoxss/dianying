@@ -1,5 +1,6 @@
 <template>
-    <div class="movie_body" ref="movie_body">
+    <Loading v-if="loading"></Loading>
+    <div v-else class="movie_body" ref="movie_body">
         <Scroller :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
             <ul>
                 <li v-for="item in movieList" :key="item.id">
@@ -28,7 +29,8 @@
         data(){
             return {
                 movieList: [],
-                pullDownMsg: '往上拉获取更多内容.....'
+                pullDownMsg: '往上拉获取更多内容.....',
+                loading: true
             }
         },
         mounted() {
@@ -36,8 +38,8 @@
                 let msg = res.data.msg;
                 if( msg === 'ok'){
                     this.movieList = res.data.data.movieList;
+                    this.loading = false;
                 }
-                console.log(this.movieList);
             });
         },
         methods : {
