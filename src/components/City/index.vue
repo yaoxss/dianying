@@ -4,80 +4,21 @@
             <div class="city_hot">
                 <h2>热门城市</h2>
                 <ul class="clearfix">
-                    <li>上海</li>
-                    <li>北京</li>
-                    <li>上海</li>
-                    <li>北京</li>
-                    <li>上海</li>
-                    <li>北京</li>
-                    <li>上海</li>
-                    <li>北京</li>
+                    <li v-for="item in hotList" :key="item.id">{{ item.nm }}</li>
                 </ul>
             </div>
-            <div class="city_sort">
-                <div>
-                    <h2>A</h2>
+            <div class="city_sort" ref="city_sort">
+                <div v-for="item in cityList" :key="item.index">
+                    <h2>{{ item.index }}</h2>
                     <ul>
-                        <li>阿拉善盟</li>
-                        <li>鞍山</li>
-                        <li>安庆</li>
-                        <li>安阳</li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>B</h2>
-                    <ul>
-                        <li>北京</li>
-                        <li>保定</li>
-                        <li>蚌埠</li>
-                        <li>包头</li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>A</h2>
-                    <ul>
-                        <li>阿拉善盟</li>
-                        <li>鞍山</li>
-                        <li>安庆</li>
-                        <li>安阳</li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>B</h2>
-                    <ul>
-                        <li>北京</li>
-                        <li>保定</li>
-                        <li>蚌埠</li>
-                        <li>包头</li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>A</h2>
-                    <ul>
-                        <li>阿拉善盟</li>
-                        <li>鞍山</li>
-                        <li>安庆</li>
-                        <li>安阳</li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>B</h2>
-                    <ul>
-                        <li>北京</li>
-                        <li>保定</li>
-                        <li>蚌埠</li>
-                        <li>包头</li>
+                        <li v-for="itemList in item.list" :key="itemList.id" >{{ itemList.nm }}</li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="city_index">
             <ul>
-                <li>A</li>
-                <li>B</li>
-                <li>C</li>
-                <li>D</li>
-                <li>E</li>
+                <li v-for="(item,index) in cityList" :key="item.index" @touchstart="handleToIndex(index)" >{{ item.index }}</li>
             </ul>
         </div>
     </div>
@@ -85,7 +26,94 @@
 
 <script>
     export default {
-        name: "city"
+        name: "city",
+        data(){
+          return {
+              cityList: [],
+              hotList: []
+          }
+        },
+        mounted() {
+            this.axios.get('/api/cityList').then((res)=>{
+                let msg = res.data.msg;
+                if(msg === 'ok'){
+                    let cities =  res.data.data.cities;
+                    // [{ index: 'A', list: [{ nm : '阿城',id: 123}] }]
+                    let {cityList,hotList} = this.formatCityList(cities);
+                    this.cityList = cityList;
+                    this.hotList = hotList;
+                    // console.log(cityList);
+                }
+            });
+        },
+        methods: {
+            formatCityList(cities){
+                let cityList = [];
+                let hotList = [];
+
+                for(let i=0;i<cities.length;++i){
+                    let firstLetter = cities[i]['py'].substring(0,1).toUpperCase();
+                    let data = {
+                        nm: cities[i]['nm'],
+                        id: cities[i]['id']
+                    };
+                    // 在eslint-loader中不允许使用hasOwnProperty方法 cityList.hasOwnProperty(firstLetter)
+                    // 使用cityList[firstLetter] === undefined 报错
+                    // if(cityList[firstLetter] === undefined){
+                    //     cityList[firstLetter]['list'].push(data);
+                    // }else{
+                    //     cityList[firstLetter] = {
+                    //         index: firstLetter,
+                    //         list: [data]
+                    //     }
+                    // }
+
+                    let key = this.isPresenceKey(cityList,firstLetter);
+                    if(key !== false){
+                        cityList[key]['list'].push(data);
+                    }else{
+                        let obj = {
+                            index: firstLetter,
+                            list: [data]
+                        }
+                        cityList.push(obj);
+                    }
+
+                    if(cities[i]['isHot'] == 1){
+                        hotList.push(cities[i]);
+                    }
+                }
+
+                cityList.sort(( n1,n2 ) => {
+                    if( n1.index > n2.index){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                });
+
+                return {
+                    cityList,
+                    hotList
+                };
+            },
+            isPresenceKey(cityList,firstLetter){
+                for(let key in cityList){
+                    if(cityList[key]['index'] === firstLetter){
+                        return key;
+                    }
+                }
+                return false;
+            },
+
+            handleToIndex(index){
+                let h2 = this.$refs.city_sort.getElementsByTagName('h2');
+                //  scrollTop到达指定位置
+                this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop;
+            }
+
+
+        }
     }
 </script>
 
