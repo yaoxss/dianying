@@ -41,18 +41,29 @@
           }
         },
         mounted() {
-            this.axios.get('/api/cityList').then((res)=>{
-                let msg = res.data.msg;
-                if(msg === 'ok'){
-                    let cities =  res.data.data.cities;
-                    // [{ index: 'A', list: [{ nm : '阿城',id: 123}] }]
-                    let {cityList,hotList} = this.formatCityList(cities);
-                    this.cityList = cityList;
-                    this.hotList = hotList;
-                    this.loading = false;
-                    // console.log(cityList);
-                }
-            });
+            let cityList = window.localStorage.getItem('cityList');
+            let hotList = window.localStorage.getItem('hotList');
+            if(cityList && hotList){
+                this.cityList = cityList;
+                this.hotList = hotList;
+                this.loading = false;
+            }else{
+                this.axios.get('/api/cityList').then((res)=>{
+                    let msg = res.data.msg;
+                    if(msg === 'ok'){
+                        let cities =  res.data.data.cities;
+                        // [{ index: 'A', list: [{ nm : '阿城',id: 123}] }]
+                        let {cityList,hotList} = this.formatCityList(cities);
+                        this.cityList = cityList;
+                        this.hotList = hotList;
+                        this.loading = false;
+
+                        window.localStorage.setItem('cityList',JSON.stringify(cityList));
+                        window.localStorage.setItem('hotList',JSON.stringify(hotList));
+                        // console.log(cityList);
+                    }
+                });
+            }
         },
         methods: {
             formatCityList(cities){
