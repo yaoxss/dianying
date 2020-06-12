@@ -14,7 +14,7 @@
                         <div v-for="item in cityList" :key="item.index">
                             <h2>{{ item.index }}</h2>
                             <ul>
-                                <li v-for="itemList in item.list" :key="itemList.id" @tap="handleToCity(item.nm,item.id)" >{{ itemList.nm }}</li>
+                                <li v-for="itemList in item.list" :key="itemList.id" @tap="handleToCity(itemList.nm,itemList.id)" >{{ itemList.nm }}</li>
                             </ul>
                         </div>
                     </div>

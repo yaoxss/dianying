@@ -27,14 +27,22 @@
         data(){
             return {
                 cinemaList: [],
-                loading: true
+                loading: true,
+                prevCityId: -1
             };
         },
-        mounted(){
-            this.axios.get('/api/cinemaList?cityId=10').then((res)=>{
+        activated(){
+            let cityId = this.$store.state.city.id;
+            if( this.prevCityId === cityId){
+                return ;
+            }
+            this.loading = true;
+
+            this.axios.get('/api/cinemaList?cityId='+cityId).then((res)=>{
                 let msg = res.data.msg;
                 if(msg === 'ok'){
                     this.cinemaList = res.data.data.cinemas;
+                    this.prevCityId = cityId;
                     this.loading = false;
                 }
             });

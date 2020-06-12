@@ -30,15 +30,22 @@
             return {
                 movieList: [],
                 pullDownMsg: '往上拉获取更多内容.....',
-                loading: true
+                loading: true,
+                prevCityId: -1
             }
         },
-        mounted() {
-            this.axios.get('/api/movieOnInfoList?cityId=10').then((res)=>{
+        activated() {
+            let cityId = this.$store.state.city.id;
+            if( this.prevCityId === cityId){
+                return ;
+            }
+            this.loading = true;
+            this.axios.get('/api/movieOnInfoList?cityId='+cityId).then((res)=>{
                 let msg = res.data.msg;
                 if( msg === 'ok'){
                     this.movieList = res.data.data.movieList;
                     this.loading = false;
+                    this.prevCityId = cityId;
                 }
             });
         },

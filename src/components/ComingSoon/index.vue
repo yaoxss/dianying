@@ -27,15 +27,23 @@
         data(){
             return {
                 comingList: [],
-                loading: true
+                loading: true,
+                prevCityId: -1
             }
         },
-        mounted() {
-            this.axios.get('/api/movieComingList?cityId=10').then((res)=>{
+        activated() {
+            let cityId = this.$store.state.city.id;
+            if( this.prevCityId === cityId){
+                return ;
+            }
+            this.loading = true;
+
+            this.axios.get('/api/movieComingList?cityId='+cityId).then((res)=>{
                 let msg = res.data.msg;
                 if( msg === 'ok'){
                     this.comingList = res.data.data.comingList;
                     this.loading = false;
+                    this.prevCityId = cityId;
                 }
             });
         }

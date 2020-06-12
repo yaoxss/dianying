@@ -22,3 +22,7 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### activated
+keep-alive 组件激活时调用
+该钩子在服务器端渲染期间不被调用
