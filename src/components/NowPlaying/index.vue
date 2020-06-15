@@ -7,7 +7,7 @@
                     <!--                setWH过滤方法在 main.js里面-->
                     <div class="pic_show"><img :src="item.img | setWH('128.180')"></div>
                     <div class="info_list">
-                        <h2>{{ item.nm }} <img  v-if="item.version" src="@/assets/maxs.png" alt=""></h2>
+                        <h2 @tap="handleToDetail(item.id)" >{{ item.nm }} <img  v-if="item.version" src="@/assets/maxs.png" alt=""></h2>
                         <p>观众评 <span class="grade">{{ item.sc }}</span></p>
                         <p>主演: {{ item.star }}</p>
                         <p>{{ item.showInfo }}</p>
@@ -51,7 +51,7 @@
         },
         methods : {
             handleToDetail(movieId) {
-                console.log(movieId);
+                // console.log(movieId);
                 this.$router.push('/movie/detail/1/' + movieId);
             },
             handleToScroll(pos) {

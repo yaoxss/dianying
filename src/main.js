@@ -7,7 +7,9 @@ import axios from 'axios';
 Vue.prototype.axios = axios;
 
 Vue.filter('setWH', (url, arg)=>{
-  return url.replace(/w\.h/,arg);
+  let urlArr = url.split('w.h');
+  return urlArr[0]+arg+urlArr[1];
+  // return url.replace(/w\.h/,arg);
 });
 
 import Scroller from '@/components/Scroller'
