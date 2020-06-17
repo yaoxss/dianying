@@ -35,7 +35,7 @@ export var messageBox = (function(){
                 },
                 handleOk(){
                     defaults.handleOk && defaults.handleOk.call(this);
-                    document.bodu.removeChild( vm.$el );
+                    document.body.removeChild( vm.$el );
                 }
             }
         });

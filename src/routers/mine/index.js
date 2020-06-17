@@ -1,4 +1,10 @@
 export default {
-    path: '/mine',
-    component: () => import('@/views/Mine')
+    path: '/mine/:viewname',
+    component: () => import('@/views/Mine'),
+    children: [
+        {
+            path: 'register',
+            component: () => import('@/components/Register')
+        },
+    ]
 }

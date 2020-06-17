@@ -11,7 +11,7 @@
 
 <script>
     export default {
-        name: "messageBox"
+        name: "messageBox",
     }
 </script>
 

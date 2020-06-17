@@ -2,25 +2,63 @@
     <div id="content">
         <div class="login_body">
             <div>
-                <input class="login_text" type="text" placeHolder="账户名/手机号/Email" >
+                <input class="login_text" type="text" v-model="userName" placeHolder="账户名/手机号/Email" >
             </div>
             <div>
-                <input class="login_text" type="password" placeHolder="请输入您的密码" >
+                <input class="login_text" type="password"  v-model="password" placeHolder="请输入您的密码" >
             </div>
             <div class="login_btn">
-                <input type="submit" value="登录">
+                <input type="submit" value="登录" @touchstart="login()">
             </div>
             <div class="login_link">
-                <a href="#">立即注册</a>
-                <a href="#">找回密码</a>
+                <a href="#"></a>
+                <a href="javascript:void(0)" @touchstart="register()">立即注册</a>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import { messageBox } from '@/components/JS';
     export default {
-        name: "login"
+        name: "login",
+        data(){
+            return {
+                userName: '',
+                password: ''
+            }
+        },
+        methods: {
+            register(){
+                this.$router.push('Register');
+                location.reload();
+            },
+            login(){
+                let messageInfo = {
+                    title: '提示',
+                    content: '账号或者密码错误',
+                    cancel: '',
+                    ok: '确定',
+                }
+
+                let registerInfo = window.localStorage.getItem("registerInfo");
+                registerInfo = JSON.parse(registerInfo);
+                for(let i in registerInfo){
+                    if(registerInfo[i]['userName'] == this.userName && registerInfo[i]['password'] == this.password){
+                        window.localStorage.setItem("isLogin",'ok');
+                        window.localStorage.setItem("loginUserName",registerInfo[i]['userName']);
+                        messageInfo.content= "登陆成功";
+                        messageInfo.handleOk = function(){
+                            window.Vue.$router.push('UserInfo');
+                            location.reload();
+                        };
+                        messageBox(messageInfo);
+                        return true;
+                    }
+                }
+                messageBox(messageInfo);
+            }
+        }
     }
 </script>
 
